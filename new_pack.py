@@ -334,14 +334,14 @@ def main():
             src = os.path.join(dirpath, filename)
             rel = os.path.relpath(src, templates_dir)
             dst = os.path.join(coord_dir, rel)
-            with open(src, "r", encoding="utf-8") as f:
-                write(dst, fill(f.read(), **subs))
+            if filename.endswith((".lua", ".md", ".toml", ".json", ".yaml", ".yml", ".gitignore", ".luacheckrc")):
+                with open(src, "r", encoding="utf-8") as f:
+                    write(dst, fill(f.read(), **subs))
+            else:
+                os.makedirs(os.path.dirname(dst), exist_ok=True)
+                shutil.copy2(src, dst)
             if os.path.basename(src) == "pre-commit":
                 os.chmod(dst, 0o755)
-
-    # Shared assets from the bootstrap repo root
-    shutil.copy2(os.path.join(BOOTSTRAP_DIR, "icon.png"), os.path.join(coord_dir, "icon.png"))
-    shutil.copy2(os.path.join(BOOTSTRAP_DIR, "LICENSE"),  os.path.join(coord_dir, "LICENSE"))
 
     manifest = {
         "namespace":      args.team,
