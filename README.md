@@ -6,6 +6,9 @@ Use this repo to create a new shell repo and coordinator repo. The generated
 shell installs `ModpackTools/` as the ongoing pack toolbelt for module
 scaffolding, deployment, release orchestration, and maintenance.
 
+Start with [docs/GETTING_STARTED.md](docs/GETTING_STARTED.md) for the full
+new-pack walkthrough.
+
 ## Create A Pack
 
 Clone this repo next to where the new pack folder should be created:
