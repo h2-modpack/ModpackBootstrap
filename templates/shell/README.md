@@ -17,7 +17,7 @@ Shell repo for the {{WINDOW_TITLE}} modpack. Contains the coordinator, shared Li
 
 ```bash
 git clone --recurse-submodules https://github.com/{{ORG}}/{{SHELL_REPO}}.git
-python ModpackTools/deploy/deploy_all.py
+python ModpackTools/local_deploy/deploy_all.py
 ```
 
 ## Releasing

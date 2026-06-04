@@ -54,7 +54,7 @@ def test_bootstrap_installs_modpack_tools_not_setup() -> None:
 
     assert "https://github.com/h2-modpack/ModpackTools.git" in new_pack_source
     assert '"ModpackTools"' in new_pack_source
-    assert "ModpackTools/deploy/deploy_all.py" in shell_readme
+    assert "ModpackTools/local_deploy/deploy_all.py" in shell_readme
     assert "ModpackTools/github/release_all.py" in release_all
     assert "ModpackTools/validate_platform_versions.py" in release_all
     assert "Setup/github/release_all.py" not in release_all

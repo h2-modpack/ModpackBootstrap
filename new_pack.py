@@ -34,7 +34,7 @@ Naming contract:
 
 After running:
   cd ../speedrun-modpack
-  python ModpackTools/deploy/deploy_all.py --overwrite
+  python ModpackTools/local_deploy/deploy_all.py --overwrite
 """
 
 import os
@@ -420,7 +420,7 @@ def main():
 
   Next steps:
     cd {output}
-    python ModpackTools/deploy/deploy_all.py --overwrite
+    python ModpackTools/local_deploy/deploy_all.py --overwrite
 
     Before running release automation, create these org Actions secrets
     with All repositories access:
@@ -439,7 +439,7 @@ def main():
 
   To add game submodules:
     git submodule add --branch main <url> Submodules/<name>
-    python ModpackTools/deploy/deploy_all.py --overwrite
+    python ModpackTools/local_deploy/deploy_all.py --overwrite
 ==========================================================
 """)
 

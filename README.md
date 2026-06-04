@@ -29,7 +29,7 @@ After creation:
 
 ```bash
 cd speedrun-modpack
-python ModpackTools/deploy/deploy_all.py --overwrite
+python ModpackTools/local_deploy/deploy_all.py --overwrite
 ```
 
 ## Naming
