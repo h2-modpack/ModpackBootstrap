@@ -18,7 +18,9 @@ The shell repo is created as a sibling of the ModpackBootstrap folder:
 The generated shell installs ModpackTools as its ongoing pack toolbelt.
 
 Naming contract:
-  --pack-id is the internal Framework id (lowercase letters, numbers, hyphens).
+  --pack-id is the internal Framework id and shell repo slug.
+            It must use lowercase letters/numbers with single hyphen separators.
+            The shell repo and local folder are always "{pack-id}-modpack".
   --pack-name is the in-game/window display name.
   --coordinator-package is the Thunderstore package/repo/folder suffix.
   --team is the Thunderstore namespace/team for pack-owned packages.
@@ -195,7 +197,7 @@ def read_package_version(toml_path):
 
 def main():
     parser = argparse.ArgumentParser(description="Scaffold a new modpack shell repo")
-    parser.add_argument("--pack-id",   required=True,  help="Pack ID used in Framework.createPack - single word preferred (e.g. 'speedrun')")
+    parser.add_argument("--pack-id",   required=True,  help="Internal Framework pack id and shell repo slug; shell repo becomes '<pack-id>-modpack' (e.g. 'speedrun')")
     parser.add_argument("--pack-name", required=True, help="In-game/window display name for the pack (e.g. 'Speedrun')")
     parser.add_argument("--coordinator-package", required=True, help="Coordinator Thunderstore package/repo suffix (e.g. 'Speedrun_Modpack')")
     parser.add_argument("--team", required=True, help="Pack Thunderstore namespace/team (e.g. 'adamantSpeedrun')")

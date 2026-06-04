@@ -34,15 +34,27 @@ python ModpackTools/local_deploy/deploy_all.py --overwrite
 
 ## Naming
 
-- `--pack-id`: internal Framework pack id, lowercase with optional hyphens.
+- `--pack-id`: internal Framework pack id and shell repo slug. It must use
+  lowercase letters/numbers with single hyphen separators. The shell repo and
+  local folder are always `{pack-id}-modpack`.
 - `--pack-name`: in-game display name.
-- `--coordinator-package`: coordinator Thunderstore package suffix.
-- `--team`: Thunderstore team/namespace for pack-owned packages.
-- `--org`: GitHub org where the shell and coordinator repos are created.
+- `--coordinator-package`: coordinator Thunderstore package suffix. It must use
+  letters/numbers/underscores, no leading/trailing underscore, and no repeated
+  underscores.
+- `--team`: Thunderstore team/namespace for pack-owned packages. It must use
+  letters/numbers/underscores and cannot start or end with `_`.
+- `--org`: GitHub org where the shell and coordinator repos are created. It
+  must use letters/numbers with single hyphen separators.
 
-Given `--team adamantSpeedrun` and
-`--coordinator-package Speedrun_Modpack`, the coordinator package/repo is
-`adamantSpeedrun-Speedrun_Modpack`.
+Example mapping:
+
+| Input | Output |
+| --- | --- |
+| `--pack-id speedrun` | shell repo/folder: `speedrun-modpack` |
+| `--pack-name "Speedrun"` | in-game/window title: `Speedrun` |
+| `--team adamantSpeedrun` | Thunderstore namespace: `adamantSpeedrun` |
+| `--coordinator-package Speedrun_Modpack` | coordinator package suffix: `Speedrun_Modpack` |
+| team + coordinator package | coordinator package/repo/folder: `adamantSpeedrun-Speedrun_Modpack` |
 
 ## Validation
 
