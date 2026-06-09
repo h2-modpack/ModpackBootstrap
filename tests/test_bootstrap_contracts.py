@@ -66,14 +66,22 @@ def test_coordinator_template_uses_current_framework_contract() -> None:
 
     assert "Framework.createPack" in main_lua
     assert "local PACK_DISPLAY_NAME" in main_lua
+    assert "assert(Framework," in main_lua
+    assert "local function ensureFrameworkPack()" in main_lua
+    assert "local frameworkCreationFailed = false" in main_lua
     assert "Framework.registerCoordinator(PACK_ID, PACK_DISPLAY_NAME, config, rebuildFramework)" in main_lua
     assert "Framework.createPack(PACK_ID, config, #config.Profiles, DEFAULT_PROFILES, FRAMEWORK_OPTS)" in main_lua
     assert "Framework.createGuiCallbacks" in main_lua
     assert "rom.gui.add_imgui(callbacks.render)" in main_lua
-    assert "rom.gui.add_always_draw_imgui(callbacks.alwaysDraw)" in main_lua
+    assert "rom.gui.add_always_draw_imgui(function()" in main_lua
+    assert "ensureFrameworkPack()" in main_lua
+    assert "callbacks.alwaysDraw()" in main_lua
     assert "rom.gui.add_to_menu_bar(callbacks.menuBar)" in main_lua
     assert "WINDOW_TITLE" not in main_lua
     assert "Framework.createPack(PACK_ID, PACK_DISPLAY_NAME" not in main_lua
+    assert "type(Framework.createPack)" not in main_lua
+    assert "type(Framework.registerCoordinator)" not in main_lua
+    assert "type(Framework.createGuiCallbacks)" not in main_lua
     assert "Framework.tryInit" not in main_lua
 
 
