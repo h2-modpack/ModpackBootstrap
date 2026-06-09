@@ -72,6 +72,17 @@ def test_coordinator_template_uses_current_framework_contract() -> None:
     assert "Framework.tryInit" not in main_lua
 
 
+def test_coordinator_release_preserves_module_dependency_pins() -> None:
+    release_yaml = (
+        ROOT_DIR / "templates" / "coordinator" / ".github" / "workflows" / "release.yaml"
+    ).read_text(encoding="utf-8")
+
+    assert "Rotate version in Thunderstore CLI config" in release_yaml
+    assert 'versionNumber = ".*"' in release_yaml
+    assert "Rotate module dependency versions" not in release_yaml
+    assert "# -- submodules-start --" not in release_yaml
+
+
 def test_coordinator_template_owns_generated_assets() -> None:
     coordinator_template = ROOT_DIR / "templates" / "coordinator"
 
@@ -88,6 +99,7 @@ def main() -> int:
         test_new_pack_validation_rejects_ambiguous_names,
         test_bootstrap_installs_modpack_tools_not_setup,
         test_coordinator_template_uses_current_framework_contract,
+        test_coordinator_release_preserves_module_dependency_pins,
         test_coordinator_template_owns_generated_assets,
     ]
 
