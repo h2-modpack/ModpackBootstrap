@@ -90,8 +90,13 @@ def test_coordinator_release_preserves_module_dependency_pins() -> None:
         ROOT_DIR / "templates" / "coordinator" / ".github" / "workflows" / "release.yaml"
     ).read_text(encoding="utf-8")
 
-    assert "Rotate version in Thunderstore CLI config" in release_yaml
-    assert 'versionNumber = ".*"' in release_yaml
+    assert "fetch-depth: 0" in release_yaml
+    assert "Checkout ModpackTools" in release_yaml
+    assert "h2-modpack/ModpackTools" in release_yaml
+    assert "github/prepare_package_release.py" in release_yaml
+    assert "--allow-empty" in release_yaml
+    assert "Rotate unreleased section in changelog" not in release_yaml
+    assert "Rotate version in Thunderstore CLI config" not in release_yaml
     assert "Rotate module dependency versions" not in release_yaml
     assert "# -- submodules-start --" not in release_yaml
 
