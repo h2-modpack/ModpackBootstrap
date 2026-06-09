@@ -54,7 +54,7 @@ Example mapping:
 | Input | Output |
 | --- | --- |
 | `--pack-id speedrun` | shell repo/folder: `speedrun-modpack` |
-| `--pack-name "Speedrun"` | in-game/window title: `Speedrun` |
+| `--pack-name "Speedrun"` | in-game display name: `Speedrun` |
 | `--team adamantSpeedrun` | Thunderstore namespace: `adamantSpeedrun` |
 | `--coordinator-package Speedrun_Modpack` | coordinator package suffix: `Speedrun_Modpack` |
 | team + coordinator package | coordinator package/repo/folder: `adamantSpeedrun-Speedrun_Modpack` |

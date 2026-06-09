@@ -21,7 +21,7 @@ Naming contract:
   --pack-id is the internal Framework id and shell repo slug.
             It must use lowercase letters/numbers with single hyphen separators.
             The shell repo and local folder are always "{pack-id}-modpack".
-  --pack-name is the in-game/window display name.
+  --pack-name is the in-game display name.
   --coordinator-package is the Thunderstore package/repo/folder suffix.
   --team is the Thunderstore namespace/team for pack-owned packages.
   --org is the GitHub org where pack repos are created.
@@ -198,7 +198,7 @@ def read_package_version(toml_path):
 def main():
     parser = argparse.ArgumentParser(description="Scaffold a new modpack shell repo")
     parser.add_argument("--pack-id",   required=True,  help="Internal Framework pack id and shell repo slug; shell repo becomes '<pack-id>-modpack' (e.g. 'speedrun')")
-    parser.add_argument("--pack-name", required=True, help="In-game/window display name for the pack (e.g. 'Speedrun')")
+    parser.add_argument("--pack-name", required=True, help="In-game display name for the pack (e.g. 'Speedrun')")
     parser.add_argument("--coordinator-package", required=True, help="Coordinator Thunderstore package/repo suffix (e.g. 'Speedrun_Modpack')")
     parser.add_argument("--team", required=True, help="Pack Thunderstore namespace/team (e.g. 'adamantSpeedrun')")
     parser.add_argument("--shared-namespace", default="adamant", help="Shared infrastructure namespace for Lib/Framework deps (default: adamant)")
@@ -316,6 +316,7 @@ def main():
     subs = dict(
         COORD_ID     = coord_id,
         PACK_ID      = args.pack_id,
+        PACK_DISPLAY_NAME = title,
         WINDOW_TITLE = title,
         NAMESPACE    = args.team,
         NAME         = name,

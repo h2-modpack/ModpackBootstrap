@@ -22,7 +22,7 @@ Framework = mods["adamant-ModpackFramework"]
 local config = chalk.auto('config.lua')
 
 local PACK_ID = "{{PACK_ID}}"
-local WINDOW_TITLE = "{{WINDOW_TITLE}}"
+local PACK_DISPLAY_NAME = "{{PACK_DISPLAY_NAME}}"
 local DEFAULT_PROFILES = {}
 local FRAMEWORK_OPTS = {
     moduleOrder = {
@@ -40,7 +40,7 @@ local function rebuildFramework()
         "{{COORD_ID}}: adamant-ModpackFramework is not loaded")
 
     rebuildInProgress = true
-    local ok = Framework.createPack(PACK_ID, WINDOW_TITLE, config, #config.Profiles, DEFAULT_PROFILES, FRAMEWORK_OPTS)
+    local ok = Framework.createPack(PACK_ID, config, #config.Profiles, DEFAULT_PROFILES, FRAMEWORK_OPTS)
     rebuildInProgress = false
 
     if not ok then
@@ -53,13 +53,13 @@ end
 mods.on_all_mods_loaded(function()
     assert(Framework and type(Framework.registerCoordinator) == "function",
         "{{COORD_ID}}: adamant-ModpackFramework is not loaded")
-    Framework.registerCoordinator(PACK_ID, config, rebuildFramework)
+    Framework.registerCoordinator(PACK_ID, PACK_DISPLAY_NAME, config, rebuildFramework)
 end)
 
 local function init()
     assert(Framework and type(Framework.createPack) == "function",
         "{{COORD_ID}}: adamant-ModpackFramework is not loaded")
-    local ok = Framework.createPack(PACK_ID, WINDOW_TITLE, config, #config.Profiles, DEFAULT_PROFILES, FRAMEWORK_OPTS)
+    local ok = Framework.createPack(PACK_ID, config, #config.Profiles, DEFAULT_PROFILES, FRAMEWORK_OPTS)
     frameworkInitialized = ok == true
 end
 

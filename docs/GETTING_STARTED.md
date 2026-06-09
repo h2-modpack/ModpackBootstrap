@@ -49,7 +49,7 @@ Naming rules:
 
 - `--pack-id` is the internal Framework id and shell repo slug. The shell repo
   and local folder become `{pack-id}-modpack`.
-- `--pack-name` is the in-game/window display name.
+- `--pack-name` is the in-game display name.
 - `--coordinator-package` is the coordinator Thunderstore package suffix.
 - `--team` is the Thunderstore team/namespace for pack-owned packages.
 - `--org` is the GitHub org where pack repos are created.
