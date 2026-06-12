@@ -1,5 +1,5 @@
 """
-Scaffolds a new modpack shell repo with Lib, Framework, and a coordinator.
+Scaffolds a new modpack shell repo with Lib and a coordinator.
 Creates the coordinator GitHub repo automatically via the gh CLI.
 
 Clone ModpackBootstrap next to where you want the new pack, then run:
@@ -18,7 +18,7 @@ The shell repo is created as a sibling of the ModpackBootstrap folder:
 The generated shell installs ModpackTools as its ongoing pack toolbelt.
 
 Naming contract:
-  --pack-id is the internal Framework id and shell repo slug.
+  --pack-id is the internal modpack id and shell repo slug.
             It must use lowercase letters/numbers with single hyphen separators.
             The shell repo and local folder are always "{pack-id}-modpack".
   --pack-name is the in-game display name.
@@ -32,11 +32,10 @@ Naming contract:
     Coordinator ID:    adamantSpeedrun-Speedrun_Modpack
     Coordinator repo:  adamantSpeedrun-Speedrun_Modpack
     Lib folder:        adamant-ModpackLib
-    Framework folder:  adamant-ModpackFramework
 
 After running:
   cd ../speedrun-modpack
-  python ModpackTools/local_deploy/deploy_all.py --overwrite
+  ModpackTools/run ModpackTools/local_deploy/deploy_all.py --overwrite
 """
 
 import os
@@ -52,9 +51,8 @@ from bootstrap_common import rmtree, fill, write, run
 BOOTSTRAP_DIR = os.path.dirname(os.path.abspath(__file__))
 ROOT_DIR  = os.path.dirname(BOOTSTRAP_DIR)
 
-LIB_URL       = "https://github.com/h2-modpack/adamant-ModpackLib.git"
-FRAMEWORK_URL = "https://github.com/h2-modpack/adamant-ModpackFramework.git"
-TOOLS_URL     = "https://github.com/h2-modpack/ModpackTools.git"
+LIB_URL   = "https://github.com/h2-modpack/adamant-ModpackLib.git"
+TOOLS_URL = "https://github.com/h2-modpack/ModpackTools.git"
 
 
 # =============================================================================
@@ -104,7 +102,6 @@ SGG_Modding-Chalk = "2.1.1"
 SGG_Modding-ReLoad = "1.0.2"
 SGG_Modding-ModUtil = "4.0.1"
 {{SHARED_NAMESPACE}}-ModpackLib = "{{LIB_VERSION}}"
-{{SHARED_NAMESPACE}}-ModpackFramework = "{{FRAMEWORK_VERSION}}"
 
 # -- submodules-start --
 
@@ -197,11 +194,11 @@ def read_package_version(toml_path):
 
 def main():
     parser = argparse.ArgumentParser(description="Scaffold a new modpack shell repo")
-    parser.add_argument("--pack-id",   required=True,  help="Internal Framework pack id and shell repo slug; shell repo becomes '<pack-id>-modpack' (e.g. 'speedrun')")
+    parser.add_argument("--pack-id",   required=True,  help="Internal modpack id and shell repo slug; shell repo becomes '<pack-id>-modpack' (e.g. 'speedrun')")
     parser.add_argument("--pack-name", required=True, help="In-game display name for the pack (e.g. 'Speedrun')")
     parser.add_argument("--coordinator-package", required=True, help="Coordinator Thunderstore package/repo suffix (e.g. 'Speedrun_Modpack')")
     parser.add_argument("--team", required=True, help="Pack Thunderstore namespace/team (e.g. 'adamantSpeedrun')")
-    parser.add_argument("--shared-namespace", default="adamant", help="Shared infrastructure namespace for Lib/Framework deps (default: adamant)")
+    parser.add_argument("--shared-namespace", default="adamant", help="Shared infrastructure namespace for Lib deps (default: adamant)")
     parser.add_argument("--org",       required=True,        help="GitHub org (e.g. 'my-org')")
     args = parser.parse_args()
 
@@ -236,7 +233,7 @@ def main():
     Team / namespace       : {args.team}
     Coordinator package    : {name}
     Coordinator full ID    : {coord_id}
-    Shared deps            : {args.shared_namespace}-ModpackLib, {args.shared_namespace}-ModpackFramework
+    Shared deps            : {args.shared_namespace}-ModpackLib
 
   Local
     Output folder          : {output}
@@ -248,7 +245,6 @@ def main():
 
   Submodule folders
     Lib                    : adamant-ModpackLib
-    Framework              : adamant-ModpackFramework
     Coordinator            : {coord_id}
 
   Side effects
@@ -287,16 +283,12 @@ def main():
     run(["git", "remote", "add", "origin", shell_url],    cwd=output)
 
     # -------------------------------------------------------------------------
-    # Lib and Framework submodules
+    # Lib submodule
     # -------------------------------------------------------------------------
     print("\n>>> Adding Lib submodule...")
     run(["git", "submodule", "add", "--branch", "main", LIB_URL, "adamant-ModpackLib"], cwd=output)
 
-    print("\n>>> Adding Framework submodule...")
-    run(["git", "submodule", "add", "--branch", "main", FRAMEWORK_URL, "adamant-ModpackFramework"], cwd=output)
-
     lib_version = read_package_version(os.path.join(output, "adamant-ModpackLib", "thunderstore.toml"))
-    framework_version = read_package_version(os.path.join(output, "adamant-ModpackFramework", "thunderstore.toml"))
 
     # -------------------------------------------------------------------------
     # Coordinator - generate files, push to new GitHub repo, then add as submodule
@@ -325,7 +317,6 @@ def main():
         COORD_REPO   = coordinator_repo,
         SHARED_NAMESPACE = args.shared_namespace,
         LIB_VERSION  = lib_version,
-        FRAMEWORK_VERSION = framework_version,
     )
     write(os.path.join(coord_dir, "src", "config.lua"),   fill(CONFIG_LUA,        **subs))
     write(os.path.join(coord_dir, "thunderstore.toml"),   fill(THUNDERSTORE_TOML, **subs))
@@ -358,7 +349,6 @@ def main():
             "SGG_Modding-ReLoad-1.0.2",
             "SGG_Modding-ModUtil-4.0.1",
             f"{args.shared_namespace}-ModpackLib-{lib_version}",
-            f"{args.shared_namespace}-ModpackFramework-{framework_version}",
         ],
         "website_url": f"https://github.com/{args.org}/{coordinator_repo}",
         "FullName": coord_id,
@@ -423,7 +413,7 @@ def main():
 
   Next steps:
     cd {output}
-    python ModpackTools/local_deploy/deploy_all.py --overwrite
+    ModpackTools/run ModpackTools/local_deploy/deploy_all.py --overwrite
 
     Before running release automation, create these org Actions secrets
     with All repositories access:
@@ -442,7 +432,7 @@ def main():
 
   To add game submodules:
     git submodule add --branch main <url> Submodules/<name>
-    python ModpackTools/local_deploy/deploy_all.py --overwrite
+    ModpackTools/run ModpackTools/local_deploy/deploy_all.py --overwrite
 ==========================================================
 """)
 

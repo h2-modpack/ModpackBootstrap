@@ -32,12 +32,12 @@ After creation:
 
 ```bash
 cd speedrun-modpack
-python ModpackTools/local_deploy/deploy_all.py --overwrite
+ModpackTools/run ModpackTools/local_deploy/deploy_all.py --overwrite
 ```
 
 ## Naming
 
-- `--pack-id`: internal Framework pack id and shell repo slug. It must use
+- `--pack-id`: internal modpack id and shell repo slug. It must use
   lowercase letters/numbers with single hyphen separators. The shell repo and
   local folder are always `{pack-id}-modpack`.
 - `--pack-name`: in-game display name.

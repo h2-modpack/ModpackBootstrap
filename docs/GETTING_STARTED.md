@@ -12,7 +12,6 @@ The stack is split into a few repos:
 | shell repo | Owns the pack workspace and submodule pointers |
 | coordinator repo | Owns pack identity, profiles, module order, and shared menu bootstrap |
 | `adamant-ModpackLib` | Shared module runtime contract |
-| `adamant-ModpackFramework` | Shared coordinator UI, discovery, profiles, and hash handling |
 | `ModpackTools` | Ongoing pack maintenance, module creation, local deploy, and release helpers |
 | module repos | One repo per gameplay/UI module under `Submodules/` |
 
@@ -47,7 +46,7 @@ python ModpackBootstrap/new_pack.py \
 
 Naming rules:
 
-- `--pack-id` is the internal Framework id and shell repo slug. The shell repo
+- `--pack-id` is the internal modpack id and shell repo slug. The shell repo
   and local folder become `{pack-id}-modpack`.
 - `--pack-name` is the in-game display name.
 - `--coordinator-package` is the coordinator Thunderstore package suffix.
@@ -63,7 +62,7 @@ From the generated shell repo:
 
 ```bash
 cd speedrun-modpack
-python ModpackTools/local_deploy/deploy_all.py --overwrite
+ModpackTools/run ModpackTools/local_deploy/deploy_all.py --overwrite
 ```
 
 Local deploy stages package assets, generates manifests, links packages into the
@@ -74,8 +73,8 @@ r2modman profile, and installs git hooks.
 From the shell repo root:
 
 ```bash
-python ModpackTools/new_module/create.py --package-id My_Module --title "My Module"
-python ModpackTools/local_deploy/deploy_all.py --overwrite
+ModpackTools/run ModpackTools/new_module/create.py --package-id My_Module --title "My Module"
+ModpackTools/run ModpackTools/local_deploy/deploy_all.py --overwrite
 ```
 
 The module creator scaffolds from
@@ -110,13 +109,13 @@ Typical flow:
 From the shell repo root:
 
 ```bash
-python ModpackTools/test_all.py
+ModpackTools/run ModpackTools/test_all.py
 ```
 
 For a faster tools-only check:
 
 ```bash
-python ModpackTools/test_all.py --python-only
+ModpackTools/run ModpackTools/test_all.py --python-only
 ```
 
 ## 6. Release
@@ -136,5 +135,3 @@ edges, and dispatches release workflows for the selected packages.
   for the default module file layout.
 - [`ModpackLib` module author docs](https://github.com/h2-modpack/adamant-ModpackLib/blob/main/docs/module-authors/GETTING_STARTED.md)
   for the module runtime contract.
-- [`ModpackFramework` coordinator guide](https://github.com/h2-modpack/adamant-ModpackFramework/blob/main/COORDINATOR_GUIDE.md)
-  for the coordinator runtime contract.

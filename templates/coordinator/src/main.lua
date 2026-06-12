@@ -1,9 +1,9 @@
 -- =============================================================================
 -- {{COORD_ID}}: Modpack Coordinator
 -- =============================================================================
--- luacheck: globals Framework
+-- luacheck: globals Modpack
 -- Thin coordinator: wires globals, owns config/setup, delegates everything
--- else to adamant-ModpackFramework.
+-- else to adamant-ModpackLib.modpack.
 
 local mods = rom.mods
 mods['SGG_Modding-ENVY'].auto()
@@ -15,47 +15,46 @@ game = rom.game
 modutil = mods['SGG_Modding-ModUtil']
 local chalk  = mods['SGG_Modding-Chalk']
 local reload = mods['SGG_Modding-ReLoad']
----@module "adamant-ModpackFramework"
----@type AdamantModpackFramework
-Framework = mods["adamant-ModpackFramework"]
-assert(Framework, "{{COORD_ID}}: adamant-ModpackFramework is not loaded")
+local lib = mods["adamant-ModpackLib"]
+assert(lib and type(lib.modpack) == "table", "{{COORD_ID}}: adamant-ModpackLib.modpack is not loaded")
+Modpack = lib.modpack
 
 local config = chalk.auto('config.lua')
 
 local PACK_ID = "{{PACK_ID}}"
 local PACK_DISPLAY_NAME = "{{PACK_DISPLAY_NAME}}"
 local DEFAULT_PROFILES = {}
-local FRAMEWORK_OPTS = {
+local MODPACK_OPTS = {
     moduleOrder = {
     },
 }
-local frameworkInitialized = false
-local frameworkCreationFailed = false
+local modpackInitialized = false
+local modpackCreationFailed = false
 local rebuildInProgress = false
 
-local function ensureFrameworkPack()
-    if frameworkInitialized then
+local function ensureModpack()
+    if modpackInitialized then
         return true
     end
-    if frameworkCreationFailed then
+    if modpackCreationFailed then
         return false
     end
 
-    local ok = Framework.createPack(PACK_ID, config, #config.Profiles, DEFAULT_PROFILES, FRAMEWORK_OPTS)
-    frameworkInitialized = ok == true
-    frameworkCreationFailed = not frameworkInitialized
-    return frameworkInitialized
+    local ok = Modpack.createPack(PACK_ID, config, #config.Profiles, DEFAULT_PROFILES, MODPACK_OPTS)
+    modpackInitialized = ok == true
+    modpackCreationFailed = not modpackInitialized
+    return modpackInitialized
 end
 
-local function rebuildFramework()
-    if rebuildInProgress or not frameworkInitialized then
+local function rebuildModpack()
+    if rebuildInProgress or not modpackInitialized then
         return false
     end
 
     rebuildInProgress = true
-    frameworkInitialized = false
-    frameworkCreationFailed = false
-    local ok = ensureFrameworkPack()
+    modpackInitialized = false
+    modpackCreationFailed = false
+    local ok = ensureModpack()
     rebuildInProgress = false
 
     if not ok then
@@ -66,24 +65,24 @@ local function rebuildFramework()
 end
 
 mods.on_all_mods_loaded(function()
-    Framework.registerCoordinator(PACK_ID, PACK_DISPLAY_NAME, config, rebuildFramework)
+    Modpack.registerCoordinator(PACK_ID, PACK_DISPLAY_NAME, config, rebuildModpack)
 end)
 
 local function init()
-    frameworkInitialized = false
-    frameworkCreationFailed = false
+    modpackInitialized = false
+    modpackCreationFailed = false
 end
 
 local loader = reload.auto_single()
 
 local function registerGui()
-    local callbacks = Framework.createGuiCallbacks(PACK_ID)
+    local callbacks = Modpack.createGuiCallbacks(PACK_ID)
     rom.gui.add_imgui(callbacks.render)
     rom.gui.add_always_draw_imgui(function()
         -- Assemble on the first frame after game-load callbacks have run, so
-        -- Framework discovery sees all coordinated modules without relying on
+        -- Modpack discovery sees all coordinated modules without relying on
         -- dependency-pin callback ordering.
-        ensureFrameworkPack()
+        ensureModpack()
         callbacks.alwaysDraw()
     end)
     rom.gui.add_to_menu_bar(callbacks.menuBar)
