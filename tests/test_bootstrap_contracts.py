@@ -101,6 +101,9 @@ def test_coordinator_release_preserves_module_dependency_pins() -> None:
     assert "h2-modpack/ModpackTools" in release_yaml
     assert "github/prepare_package_release.py" in release_yaml
     assert "--allow-empty" in release_yaml
+    assert "--release-notes-output .release-notes.md" in release_yaml
+    assert 'git commit --message "chore(release): ${{ inputs.tag }}"' in release_yaml
+    assert "--notes-file '.release-notes.md'" in release_yaml
     assert "Rotate unreleased section in changelog" not in release_yaml
     assert "Rotate version in Thunderstore CLI config" not in release_yaml
     assert "Rotate module dependency versions" not in release_yaml
