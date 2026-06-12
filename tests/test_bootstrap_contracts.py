@@ -48,6 +48,9 @@ def test_new_pack_validation_rejects_ambiguous_names() -> None:
 def test_bootstrap_installs_modpack_tools_not_setup() -> None:
     new_pack_source = (ROOT_DIR / "new_pack.py").read_text(encoding="utf-8")
     shell_readme = (ROOT_DIR / "templates" / "shell" / "README.md").read_text(encoding="utf-8")
+    shell_ci = (ROOT_DIR / "templates" / "shell" / ".github" / "workflows" / "ci.yaml").read_text(
+        encoding="utf-8"
+    )
     release_all = (ROOT_DIR / "templates" / "shell" / ".github" / "workflows" / "release-all.yaml").read_text(
         encoding="utf-8"
     )
@@ -55,8 +58,24 @@ def test_bootstrap_installs_modpack_tools_not_setup() -> None:
     assert "https://github.com/h2-modpack/ModpackTools.git" in new_pack_source
     assert '"ModpackTools"' in new_pack_source
     assert "ModpackTools/local_deploy/deploy_all.py" in shell_readme
+    assert "ModpackTools/validate_platform_versions.py" in shell_ci
+    assert "ModpackTools/run ModpackTools/test_all.py" in shell_ci
+    assert "leafo/gh-actions-lua@v10" in shell_ci
+    assert "leafo/gh-actions-luarocks@v4" in shell_ci
     assert "ModpackTools/github/release_all.py" in release_all
-    assert "ModpackTools/validate_platform_versions.py" in release_all
+    assert "Verify shell CI passed for release commit" in release_all
+    assert "--workflow \"ci.yaml\"" in release_all
+    assert "--coordinator-repo \"{{COORD_ID}}\"" in release_all
+    assert "--pin-coordinator-module-deps" in release_all
+    assert "--core-repo" not in release_all
+    assert "lib-version" in release_all
+    assert "--dependency-repo" not in release_all
+    assert "apt-get" not in release_all
+    assert "lua5.2" not in release_all
+    assert "luac5.2" not in release_all
+    assert "Run ModpackLib tests" not in release_all
+    assert "Validate module sources" not in release_all
+    assert "leafo/gh-actions-lua@" not in release_all
     assert "Run ModpackFramework tests" not in release_all
     assert "adamant-ModpackFramework" not in release_all
     assert "Setup/github/release_all.py" not in release_all
@@ -99,10 +118,19 @@ def test_coordinator_release_preserves_module_dependency_pins() -> None:
     assert "fetch-depth: 0" in release_yaml
     assert "Checkout ModpackTools" in release_yaml
     assert "h2-modpack/ModpackTools" in release_yaml
+    assert "actions/checkout@v4" not in release_yaml
+    assert "leafo/gh-actions-lua@v10" not in release_yaml
+    assert "leafo/gh-actions-luarocks@v4" not in release_yaml
+    assert "leafo/gh-actions-lua@35bcb06abec04ec87df82e08caa84d545348536e" in release_yaml
+    assert "leafo/gh-actions-luarocks@e65774a6386cb4f24e293dca7fc4ff89165b64c5" in release_yaml
     assert "github/prepare_package_release.py" in release_yaml
+    assert "github/check_thunderstore_release.py" in release_yaml
+    assert "steps.thunderstore.outputs.published != 'true'" in release_yaml
+    assert "steps.thunderstore.outputs.published == 'true'" in release_yaml
     assert "--allow-empty" in release_yaml
     assert "--release-notes-output .release-notes.md" in release_yaml
     assert 'git commit --message "chore(release): ${{ inputs.tag }}"' in release_yaml
+    assert "git push --atomic origin HEAD:${{ github.ref_name }} refs/tags/${{ inputs.tag }}" in release_yaml
     assert "--notes-file '.release-notes.md'" in release_yaml
     assert "Rotate unreleased section in changelog" not in release_yaml
     assert "Rotate version in Thunderstore CLI config" not in release_yaml
