@@ -63,6 +63,9 @@ def test_bootstrap_installs_modpack_tools_not_setup() -> None:
     assert "leafo/gh-actions-lua@v10" in shell_ci
     assert "leafo/gh-actions-luarocks@v4" in shell_ci
     assert "ModpackTools/github/release_all.py" in release_all
+    assert 'TOOLS_REF: "release-tools-2026-06-12"' in release_all
+    assert '--module-field "tools-ref=$TOOLS_REF"' in release_all
+    assert '--coordinator-field "tools-ref=$TOOLS_REF"' in release_all
     assert "Verify shell CI passed for release commit" in release_all
     assert "--workflow \"ci.yaml\"" in release_all
     assert "--coordinator-repo \"{{COORD_ID}}\"" in release_all
@@ -118,6 +121,9 @@ def test_coordinator_release_preserves_module_dependency_pins() -> None:
     assert "fetch-depth: 0" in release_yaml
     assert "Checkout ModpackTools" in release_yaml
     assert "h2-modpack/ModpackTools" in release_yaml
+    assert 'tools-ref:' in release_yaml
+    assert 'default: "release-tools-2026-06-12"' in release_yaml
+    assert "ref: ${{ inputs['tools-ref'] }}" in release_yaml
     assert "actions/checkout@v4" not in release_yaml
     assert "leafo/gh-actions-lua@v10" not in release_yaml
     assert "leafo/gh-actions-luarocks@v4" not in release_yaml
