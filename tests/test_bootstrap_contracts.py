@@ -57,6 +57,8 @@ def test_bootstrap_installs_modpack_tools_not_setup() -> None:
     assert "ModpackTools/local_deploy/deploy_all.py" in shell_readme
     assert "ModpackTools/github/release_all.py" in release_all
     assert "ModpackTools/validate_platform_versions.py" in release_all
+    assert "Run ModpackFramework tests" not in release_all
+    assert "adamant-ModpackFramework" not in release_all
     assert "Setup/github/release_all.py" not in release_all
     assert "Setup/deploy/deploy_all.py" not in shell_readme
 
