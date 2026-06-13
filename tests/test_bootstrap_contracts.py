@@ -54,18 +54,36 @@ def test_bootstrap_installs_modpack_tools_not_setup() -> None:
     release_all = (ROOT_DIR / "templates" / "shell" / ".github" / "workflows" / "release-all.yaml").read_text(
         encoding="utf-8"
     )
+    smoke = (ROOT_DIR / "templates" / "shell" / "tests" / "smoke.lua").read_text(encoding="utf-8")
+    smoke_manifest_path = ROOT_DIR / "templates" / "shell" / "tests" / "smoke_manifest.lua"
+    test_all_path = ROOT_DIR / "templates" / "shell" / "tests" / "test_all.lua"
 
     assert "https://github.com/h2-modpack/ModpackTools.git" in new_pack_source
     assert '"ModpackTools"' in new_pack_source
     assert "ModpackTools/local_deploy/deploy_all.py" in shell_readme
-    assert "ModpackTools/validate_platform_versions.py" in shell_ci
-    assert "ModpackTools/run ModpackTools/test_all.py" in shell_ci
+    assert "ModpackTools/local_test/all.py" in shell_readme
+    assert "ModpackTools/local_test/all.py" in new_pack_source
+    assert "ModpackTools/new_module/register_submodules.py" in shell_readme
+    assert "ModpackTools/new_module/register_submodules.py" in new_pack_source
+    assert "lua tests/smoke.lua" in shell_readme
+    assert "lua tests/test_all.lua" not in shell_readme
+    assert "lua tests/test_all.lua" not in new_pack_source
+    assert "tests/smoke_manifest.lua" not in shell_readme
+    assert "tests/smoke_manifest.lua" not in new_pack_source
+    assert "Run smoke" in shell_ci
+    assert "Run smoke manifest" not in shell_ci
+    assert "lua tests/smoke.lua" in shell_ci
+    assert "ModpackTools/validate_platform_versions.py" not in shell_ci
+    assert "ModpackTools/run ModpackTools/test_all.py" not in shell_ci
     assert "leafo/gh-actions-lua@v10" in shell_ci
-    assert "leafo/gh-actions-luarocks@v4" in shell_ci
+    assert "leafo/gh-actions-luarocks@v4" not in shell_ci
     assert "ModpackTools/github/release_all.py" in release_all
+    assert "Validate platform dependency versions" in release_all
+    assert "python3 ModpackTools/validate_platform_versions.py" in release_all
     assert 'TOOLS_REF: "release-tools-V3"' in release_all
     assert '--module-field "tools-ref=$TOOLS_REF"' in release_all
     assert '--coordinator-field "tools-ref=$TOOLS_REF"' in release_all
+    assert "--verify-ci" in release_all
     assert "Verify shell CI passed for release commit" in release_all
     assert "--workflow \"ci.yaml\"" in release_all
     assert "--coordinator-repo \"{{COORD_ID}}\"" in release_all
@@ -83,6 +101,13 @@ def test_bootstrap_installs_modpack_tools_not_setup() -> None:
     assert "adamant-ModpackFramework" not in release_all
     assert "Setup/github/release_all.py" not in release_all
     assert "Setup/deploy/deploy_all.py" not in shell_readme
+    assert not smoke_manifest_path.exists()
+    assert not test_all_path.exists()
+    assert 'dofile("adamant-ModpackLib/tests/harness/shell_smoke.lua")' in smoke
+    assert "shellSmoke.run" in smoke
+    assert "rootDir = \".\"" in smoke
+    assert "smokeRunner.assertManifest" not in smoke
+    assert "smoke_manifest" not in smoke
 
 
 def test_coordinator_template_uses_current_modpack_contract() -> None:

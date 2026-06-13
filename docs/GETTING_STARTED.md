@@ -66,7 +66,8 @@ ModpackTools/run ModpackTools/local_deploy/deploy_all.py --overwrite
 ```
 
 Local deploy stages package assets, generates manifests, links packages into the
-r2modman profile, and installs git hooks.
+r2modman profile, and installs git hooks. It runs the shell smoke preflight
+before writing to the live profile.
 
 ## 3. Add A Module
 
@@ -85,6 +86,14 @@ coordinator dependency block.
 Module package names use the pack team as the namespace. For example, with
 `--team adamantSpeedrun`, `--package-id LiveSplit` creates
 `adamantSpeedrun-LiveSplit`.
+
+After adding a module, shell smoke includes it automatically from the registered
+`.gitmodules` entry. If you add or remove submodules manually, run:
+
+```bash
+ModpackTools/run ModpackTools/new_module/register_submodules.py
+ModpackTools/run ModpackTools/new_module/register_submodules.py --prune
+```
 
 ## 4. Edit The Module
 
@@ -109,13 +118,14 @@ Typical flow:
 From the shell repo root:
 
 ```bash
-ModpackTools/run ModpackTools/test_all.py
+lua tests/smoke.lua
+ModpackTools/run ModpackTools/local_test/all.py
 ```
 
-For a faster tools-only check:
+For a faster tools-only check from the `ModpackTools/` repo:
 
 ```bash
-ModpackTools/run ModpackTools/test_all.py --python-only
+python3 tests/all.py
 ```
 
 ## 6. Release
@@ -124,8 +134,9 @@ After module/coordinator changes are committed and pushed, commit the shell
 submodule pointers. Then run the shell repo's **Release All** GitHub Actions
 workflow.
 
-Release All validates the checked-out shell snapshot, checks platform dependency
-edges, and dispatches release workflows for the selected packages.
+Release All checks that shell CI passed for the release commit, validates
+platform dependency edges, verifies selected child repo CI, and dispatches
+release workflows for the selected packages.
 
 ## Where To Read Next
 

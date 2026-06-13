@@ -35,6 +35,8 @@ Naming contract:
 
 After running:
   cd ../speedrun-modpack
+  lua tests/smoke.lua
+  ModpackTools/run ModpackTools/local_test/all.py
   ModpackTools/run ModpackTools/local_deploy/deploy_all.py --overwrite
 """
 
@@ -413,6 +415,8 @@ def main():
 
   Next steps:
     cd {output}
+    lua tests/smoke.lua
+    ModpackTools/run ModpackTools/local_test/all.py
     ModpackTools/run ModpackTools/local_deploy/deploy_all.py --overwrite
 
     Before running release automation, create these org Actions secrets
@@ -432,6 +436,7 @@ def main():
 
   To add game submodules:
     git submodule add --branch main <url> Submodules/<name>
+    ModpackTools/run ModpackTools/new_module/register_submodules.py
     ModpackTools/run ModpackTools/local_deploy/deploy_all.py --overwrite
 ==========================================================
 """)

@@ -32,6 +32,8 @@ After creation:
 
 ```bash
 cd speedrun-modpack
+lua tests/smoke.lua
+ModpackTools/run ModpackTools/local_test/all.py
 ModpackTools/run ModpackTools/local_deploy/deploy_all.py --overwrite
 ```
 
